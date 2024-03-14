@@ -14,7 +14,7 @@
 
 buildGoModule rec {
   pname = "pulumi";
-  version = "3.93.0";
+  version = "3.109.0";
 
   # Used in pulumi-language packages, which inherit this prop
   sdkVendorHash = lib.fakeHash;
@@ -23,12 +23,12 @@ buildGoModule rec {
     owner = pname;
     repo = pname;
     rev = "v${version}";
-    hash = "sha256-EaYYIbV7IItnmVfyEHtaAbAXvrZ8CXMjW+yNXOBIxg8=";
+    hash = "sha256-ZxGlqKSSq1qpeh3KlqKbvCtm/4uPy7YTvWUM7SDyZaE=";
     # Some tests rely on checkout directory name
     name = "pulumi";
   };
 
-  vendorHash = "sha256-G+LspC6b2TvboMU6rKB0qrhhMNaLPVt/nUYZzkiVr/Q=";
+  vendorHash = "sha256-KeCerF7XGgEoCrYrjAZfzrDJ6C4KV11cwCLjmGnKrkY=";
 
   sourceRoot = "${src.name}/pkg";
 
@@ -50,26 +50,26 @@ buildGoModule rec {
 
   disabledTests = [
     # Flaky test
-    "TestPendingDeleteOrder"
-    # Tries to clone repo: github.com/pulumi/templates.git
+    # This test is currently flaky when run in parallel parallelism is
+    # temporarily disabled.  See also
+    # https://github.com/pulumi/pulumi/issues/15461.
+    "TestMarshalDeployment"
+    # The following tests try to clone repo: github.com/pulumi/templates.git
     "TestGenerateOnlyProjectCheck"
+    "TestPulumiNewSetsTemplateTag"
+    # MockTerminal test fails
+    # Current line was not moved to the expected value of 468 for Page Up
+    "TestTreeKeyboardHandling"
     # Following tests give this error, not quite sure why:
     #     Error Trace:    /build/pulumi/pkg/engine/lifecycletest/update_plan_test.go:273
     # Error:          Received unexpected error:
     #                 Unexpected diag message: <{%reset%}>using pulumi-resource-pkgA from $PATH at /build/tmp.bS8caxmTx7/pulumi-resource-pkgA<{%reset%}>
-    # Test:           TestUnplannedDelete
-    "TestExpectedDelete"
     "TestPlannedInputOutputDifferences"
     "TestPlannedUpdateChangedStack"
     "TestExpectedCreate"
-    "TestUnplannedDelete"
-    # Following test gives this  error, not sure why:
-    # --- Expected
-    # +++ Actual
-    # @@ -1 +1 @@
-    # -gcp
-    # +aws
-    "TestPluginMapper_MappedNamesDifferFromPulumiName"
+    # The following tests try to POST to pulumi-testing.vault.azure.net
+    "TestAzureKeyVaultAutoFix"
+    "TestAzureKeyVaultAutoFix15329"
   ];
 
   nativeCheckInputs = [
