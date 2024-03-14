@@ -14,7 +14,7 @@
 
 buildGoModule rec {
   pname = "pulumi";
-  version = "3.93.0";
+  version = "3.110.0";
 
   # Used in pulumi-language packages, which inherit this prop
   sdkVendorHash = lib.fakeHash;
@@ -23,12 +23,12 @@ buildGoModule rec {
     owner = pname;
     repo = pname;
     rev = "v${version}";
-    hash = "sha256-EaYYIbV7IItnmVfyEHtaAbAXvrZ8CXMjW+yNXOBIxg8=";
+    hash = "sha256-Q4vbFg29Vry/GS+uFdLv68MrHQvNh+JPpkW2QX5QavE=";
     # Some tests rely on checkout directory name
     name = "pulumi";
   };
 
-  vendorHash = "sha256-G+LspC6b2TvboMU6rKB0qrhhMNaLPVt/nUYZzkiVr/Q=";
+  vendorHash = "sha256-d7bSw2kS5Y4ZlfEefFnOJmG2gye3LB8Bgl8fNHSKAco=";
 
   sourceRoot = "${src.name}/pkg";
 
@@ -50,26 +50,31 @@ buildGoModule rec {
 
   disabledTests = [
     # Flaky test
-    "TestPendingDeleteOrder"
-    # Tries to clone repo: github.com/pulumi/templates.git
+    # "TestPendingDeleteOrder"
+    # The following tests try to clone repo: github.com/pulumi/templates.git
     "TestGenerateOnlyProjectCheck"
+    "TestPulumiNewSetsTemplateTag"
     # Following tests give this error, not quite sure why:
     #     Error Trace:    /build/pulumi/pkg/engine/lifecycletest/update_plan_test.go:273
     # Error:          Received unexpected error:
     #                 Unexpected diag message: <{%reset%}>using pulumi-resource-pkgA from $PATH at /build/tmp.bS8caxmTx7/pulumi-resource-pkgA<{%reset%}>
     # Test:           TestUnplannedDelete
-    "TestExpectedDelete"
+    # "TestExpectedDelete"
     "TestPlannedInputOutputDifferences"
-    "TestPlannedUpdateChangedStack"
+    # "TestPlannedUpdateChangedStack"
     "TestExpectedCreate"
-    "TestUnplannedDelete"
+    "TestPlannedInputOutputDifferencesTestUnplannedDelete"
+    # The following tests try to POST to pulumi-testing.vault.azure.net
+    "TestAzureCloudManager"
+    "TestAzureKeyVaultExistingKey"
+    "TestAzureKeyVaultAutoFix15329"
     # Following test gives this  error, not sure why:
     # --- Expected
     # +++ Actual
     # @@ -1 +1 @@
     # -gcp
     # +aws
-    "TestPluginMapper_MappedNamesDifferFromPulumiName"
+    # "TestPluginMapper_MappedNamesDifferFromPulumiName"
   ];
 
   nativeCheckInputs = [
